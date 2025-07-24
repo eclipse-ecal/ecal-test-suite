@@ -4,11 +4,11 @@ This repository contains automated integration tests for [eCAL](https://github.c
 
 - View status and logs of last tests:
 
-    https://github.com/EmirTutar/ECAL_Test_Framework/actions
+    https://github.com/EmirTutar/ecal-test-suite/actions
 
 - Test report (available after completion of the tests):
     
-    https://emirtutar.github.io/ECAL_Test_Framework/
+    https://emirtutar.github.io/ecal-test-suite/
 
 ## Table of Contents
 
@@ -91,7 +91,7 @@ Each test case is implemented using [Robot Framework](https://robotframework.org
 ## Test Reports
 
 Test results are automatically deployed to:
-👉 [https://emirtutar.github.io/ECAL\_Test\_Framework](https://emirtutar.github.io/ECAL_Test_Framework)
+👉 [https://emirtutar.github.io/ECAL\_Test\_Framework](https://emirtutar.github.io/ecal-test-suite)
 
 Each run is timestamped and archived, with access to:
 
