@@ -1,0 +1,62 @@
+# eCAL Base Image for Local Integration Tests
+FROM ubuntu:22.04
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    git \
+    wget \
+    curl \
+    unzip \
+    libprotobuf-dev \
+    protobuf-compiler \
+    libspdlog-dev \
+    libssl-dev \
+    qtbase5-dev \
+    libhdf5-dev \
+    libqwt-qt5-dev 
+
+# Install CMake (3.31.6)
+WORKDIR /tmp
+RUN wget https://github.com/Kitware/CMake/releases/download/v3.31.6/cmake-3.31.6-linux-x86_64.sh && \
+    chmod +x cmake-3.31.6-linux-x86_64.sh && \
+    ./cmake-3.31.6-linux-x86_64.sh --skip-license --prefix=/usr/local && \
+    rm cmake-3.31.6-linux-x86_64.sh
+RUN cmake --version
+
+#Default
+ARG ECAL_REPO_URL=https://github.com/eclipse-ecal/ecal.git
+ARG ECAL_COMMIT=master
+
+#Change URL or Commit hash (e.g. Forked repo URL or specific Commit hash to check)
+ENV ECAL_REPO_URL=${ECAL_REPO_URL}
+ENV ECAL_COMMIT=${ECAL_COMMIT}
+
+# Clone eCAL repository
+WORKDIR /opt
+RUN git clone ${ECAL_REPO_URL} && \
+    cd ecal && \
+    git checkout ${ECAL_COMMIT} && \
+    git submodule init && \
+    git submodule update
+
+WORKDIR /opt/ecal/_build
+
+RUN cmake .. \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_PROJECT_TOP_LEVEL_INCLUDES=cmake/submodule_dependencies.cmake \
+      -DECAL_THIRDPARTY_BUILD_PROTOBUF=ON \
+      -DECAL_THIRDPARTY_BUILD_CURL=OFF \
+      -DECAL_THIRDPARTY_BUILD_HDF5=OFF \
+      -DECAL_THIRDPARTY_BUILD_QWT=OFF && \
+    make -j$(nproc) && \
+    make install && \
+    ldconfig
+
+# Fix symlinks
+RUN ln -s /usr/local/lib/libecaltime-localtime.so /usr/local/lib/libecaltime.so && \
+    ln -sf /usr/local/lib/libecal_core.so /usr/local/lib/libecal.so && \
+    ldconfig
+
+# Install TCLAP
+RUN apt-get update && apt-get install -y libtclap-dev

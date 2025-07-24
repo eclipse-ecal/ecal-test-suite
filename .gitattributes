@@ -1,0 +1,14 @@
+# This file makes sure all text files use LF (Linux-style) line endings.
+# It prevents problems with scripts and tools when using Windows or Linux.
+
+* text=auto eol=lf
+
+*.sh  text eol=lf
+*.py  text eol=lf
+*.cpp text eol=lf
+*.h   text eol=lf
+*.txt text eol=lf
+*.py text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.robot text eol=lf

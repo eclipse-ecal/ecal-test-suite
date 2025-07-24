@@ -1,0 +1,30 @@
+# General
+.DS_Store
+
+# Build and temporary directories
+build/
+build*/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+Makefile
+*.cmake
+
+# Visual Studio Code settings
+.vscode/
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+
+# Logs and other
+*.log
+
+# Robot
+results
+log.html
+output.xml
+report.html
+
+#pycache
+integration_tests/lib/__pycache__/*.pyc

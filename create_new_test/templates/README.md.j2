@@ -1,0 +1,38 @@
+# {{ test_name | replace("_", " ") | title }}
+
+> Describe the goal, structure, and implementation of this test case.
+
+## Structure
+
+```bash
+{{ test_name }}/
+├── docker/
+│ └── Dockerfile
+├── robottests/
+│ └── {{ test_name }}.robot
+├── scripts/
+│ ├── build_images.sh
+│ └── entrypoint.sh
+├── src/
+│ ├── CMakeLists.txt
+│ ├── {{ test_name }}_pub.cpp
+│ └── {{ test_name }}_sub.cpp
+```
+
+
+## Instructions
+
+1. Build Docker images:
+
+```bash
+cd scripts
+./build_images.sh {{ test_name }}
+```
+
+Run test:
+
+```bash
+robot ../robottests/{{ test_name }}.robot
+```
+
+---
