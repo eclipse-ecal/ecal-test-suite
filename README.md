@@ -1,4 +1,4 @@
-# eCAL integration Tests
+# ecal-test-suite
 
 This repository contains automated integration tests for [eCAL](https://github.com/eclipse-ecal/ecall). It is designed to run and validate communication scenarios between multiple processes using eCAL middleware.
 
