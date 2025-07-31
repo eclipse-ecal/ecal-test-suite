@@ -106,39 +106,82 @@ Tests can be triggered in three ways:
 1. Manually via GitHub Actions
 2. Automatically from the eCAL repository using `repository_dispatch` (Create a PR or Push to Master)
 
-## Note for Forks
+## Note for Forks and GitHub Token Setup
 
-If you are working on a fork of the official eCAL repository (e.g., UserName/ecal) and you create a pull request or push from develop to master within your fork, you need to allow GitHub Actions to trigger the integration tests in this repository.
+When working with a **forked repository** (e.g. `YourUsername/ecal`), GitHub Actions cannot trigger workflows in other repositories (like the test suite) unless explicitly allowed via a token.
 
-To do so, follow these steps:
+To enable integration testing across forks, two GitHub tokens are required:
 
-### 1. Create a Personal Access Token (PAT):
-1. Go to your GitHub Developer Settings → Personal Access Tokens.
-2. Click on “Generate new token (classic)”.
-3. Set a name like ECAL Test Trigger Token.
-4. Set an expiration (e.g., 90 days or custom).
-5. Under Scopes, enable:
- - repo (for private forks)
- 
-    or
+### 1. `TEST_SUITE_TOKEN`
 
- - public_repo (for public forks only)
+**Used in:** your fork of `ecal` (e.g. `YourUsername/ecal`)
 
-6. Click Generate token and copy it immediately. You won't see it again.
+**Purpose:**  
+Triggers the test suite (e.g. `YourUsername/ecal-test-suite`) via `repository_dispatch` when a PR or push occurs in your forked ecal repo.
 
-### 2. Add the Token to Your Forked eCAL Repository:
-1. Go to your forked repository on GitHub (e.g., UserName/ecal).
-2. Navigate to: Settings → Secrets and variables → Actions → New repository secret.
-3. Name the secret exactly:
+**Type:**  
+Classic Personal Access Token (PAT)_  
+--> Fine-grained tokens **do not work here** (tested and confirmed)
 
-```bash
-TEST_FRAMEWORK_TOKEN
-```
-4. Paste the copied token as the value.
-5. Click Add secret.
-6. Once added, GitHub Actions in your fork can use this token to trigger the test framework via repository_dispatch.
+**Required Scopes:**
 
-⚠️ This is only needed for forks. If you push or create PRs directly in eclipse-ecal/ecal, no token is required.
+- `repo` (for private repositories)  
+- `workflow`
+
+**How to set up:**
+
+1. Go to [Developer Settings → Personal Access Tokens](https://github.com/settings/tokens)
+2. Click **"Generate new token (classic)"**
+3. Name it: `TEST_SUITE_TOKEN`
+4. Set expiration (e.g. 90 days or custom)
+5. Enable scopes:
+   - ✅ `repo`
+   - ✅ `workflow`
+6. Generate and copy the token (you won't see it again)
+7. Go to your forked repo: `https://github.com/YourUsername/ecal`
+8. Navigate to **Settings → Secrets and variables → Actions**
+9. Add a new secret:
+   - Name: `TEST_SUITE_TOKEN`
+   - Value: (paste the token)
+
+### 2. `COMMIT_STATUS_TOKEN`
+
+**Used in:** your fork of `ecal-test-suite` (e.g. `YourUsername/ecal-test-suite`)
+
+**Purpose:**  
+Sends the result of the integration test (PASS/FAIL) **back to your forked ecal repo** via commit status API.
+
+**Type:**  
+Fine-grained Personal Access Token (PAT)_
+
+**Repository access:**  
+Must include your forked `ecal` repo (e.g. `YourUsername/ecal`)
+
+**Required Repository Permissions:**
+
+- ✅ `Read access to metadata`
+- ✅ `Read and write access to commit statuses`
+
+**How to set up:**
+
+1. Go to [Developer Settings → Personal Access Tokens → Fine-grained tokens](https://github.com/settings/personal-access-tokens)
+2. Click **"Generate new token"**
+3. Repository access: choose your forked `ecal` repo
+4. Permissions:
+   - ✅ `Metadata: Read-only`
+   - ✅ `Commit statuses: Read and write`
+5. Name the token: `COMMIT_STATUS_TOKEN`
+6. Generate and copy the token
+7. Go to your test suite fork: `https://github.com/YourUsername/ecal-test-suite`
+8. Navigate to **Settings → Secrets and variables → Actions**
+9. Add a new secret:
+   - Name: `COMMIT_STATUS_TOKEN`
+   - Value: (paste the token)
+
+### Note
+
+You only need these tokens in forks or for cross-repository communication.  
+If you're pushing or creating pull requests directly within the official `eclipse-ecal/ecal`, **no token setup is required**.
 
 ## Feedback to eCAL Repo
 
