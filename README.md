@@ -106,7 +106,7 @@ Tests can be triggered in three ways:
 1. Manually via GitHub Actions
 2. Automatically from the eCAL repository using `repository_dispatch` (Create a PR or Push to Master)
 
-## Note for Forks and GitHub Token Setup
+## Note for Forks
 
 When working with a **forked repository** (e.g. `YourUsername/ecal`), GitHub Actions cannot trigger workflows in other repositories (like the test suite) unless explicitly allowed via a token.
 
