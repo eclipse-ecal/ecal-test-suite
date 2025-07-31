@@ -1,0 +1,31 @@
+#!/bin/bash
+
+ROLE=$1        # e.g. pub / sub / test_role
+TOPIC=$2
+NAME=$3
+EXTRA=$4
+
+if [ -z "$ROLE" ]; then
+  echo "Usage: $0 <role> [topic] [name] [extra]"
+  exit 1
+fi
+
+TOPIC=${TOPIC:-test_topic}
+NAME=${NAME:-${ROLE}_node}
+
+cd /app/src/build
+
+if [ "$ROLE" = "pub" ]; then
+  echo "[Entrypoint] Starting Publisher..."
+  ./{{ test_name }}_publisher --topic "$TOPIC" --name pub_${NAME} $EXTRA
+  exit $?
+
+elif [ "$ROLE" = "sub" ]; then
+  echo "[Entrypoint] Starting Subscriber..."
+  ./{{ test_name }}_subscriber --topic "$TOPIC" --name sub_${NAME} $EXTRA
+  exit $?
+
+else
+  echo "[Entrypoint] Unknown role: $ROLE"
+  exit 1
+fi

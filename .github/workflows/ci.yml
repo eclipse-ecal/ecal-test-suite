@@ -1,0 +1,181 @@
+name: eCAL Integration Tests
+
+on:
+  repository_dispatch:
+    types: [run-tests]
+  workflow_dispatch:
+
+concurrency:
+  group: gh-pages-deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+    
+    - name: Save Commit SHA (if provided)
+      run: |
+        if [[ -n "${{ github.event.client_payload.sha }}" ]]; then
+          echo "COMMIT_SHA=${{ github.event.client_payload.sha }}" >> $GITHUB_ENV
+        else
+          echo "COMMIT_SHA=master" >> $GITHUB_ENV
+        fi
+    
+    - name: Save Repository URL (if provided)
+      run: |
+        if [[ -n "${{ github.event.client_payload.repo }}" ]]; then
+          echo "ECAL_REPO_URL=https://github.com/${{ github.event.client_payload.repo }}.git" >> $GITHUB_ENV
+        else
+          echo "ECAL_REPO_URL=https://github.com/eclipse-ecal/ecal.git" >> $GITHUB_ENV
+        fi
+
+    - name: Pull existing gh-pages branch into folder
+      run: |
+        git clone --branch gh-pages https://github.com/${{ github.repository }} gh-pages || mkdir gh-pages
+
+    - name: Create Timestamped Reports Folder
+      run: |
+        echo "REPORT_TS=$(date +'%Y-%m-%d_%H-%M-%S')" >> $GITHUB_ENV 
+
+    - name: Store Commit SHA in Report Folder
+      run: |
+        mkdir -p gh-pages/${REPORT_TS}
+        echo "${COMMIT_SHA}" > gh-pages/${REPORT_TS}/.commit
+
+    - name: Store Repository URL in Report Folder
+      run: |
+        echo "${ECAL_REPO_URL}" > gh-pages/${REPORT_TS}/.repo
+    
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build ecal_base Image
+      run: |
+        docker build \
+          --build-arg ECAL_REPO_URL=${{ env.ECAL_REPO_URL }} \
+          --build-arg ECAL_COMMIT=${{ env.COMMIT_SHA }} \
+          -t ecal_base \
+          -f integration_tests/docker/Dockerfile.ecal_base .
+
+    - name: Install Robot Framework + Docker SDK
+      run: |
+        python3 -m pip install --upgrade pip
+        pip install robotframework docker
+
+    - name: Set PYTHONPATH
+      run: echo "PYTHONPATH=$PWD/integration_tests/lib" >> $GITHUB_ENV
+
+    - name: Make all build_images.sh scripts executable
+      run: find integration_tests/ -type f -name "build_images.sh" -exec chmod +x {} \;
+
+    - name: Make all entrypoint.sh scripts executable
+      run: find integration_tests/ -type f -name "entrypoint.sh" -exec chmod +x {} \;
+
+    - name: Run All Robot Tests Together
+      run: |
+        set -e
+        mkdir -p integration_tests/results
+        robot \
+          --output integration_tests/results/output.xml \
+          --report integration_tests/results/report.html \
+          --log integration_tests/results/log.html \
+          integration_tests/**/robottests/*.robot
+
+    - name: Archive Robot logs (for manual download only)
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: robot-reports
+        path: integration_tests/results/
+
+    - name: Copy Reports to gh-pages folder
+      if: always()
+      run: |
+        mkdir -p gh-pages/${REPORT_TS}/summary
+        cp integration_tests/results/* gh-pages/${REPORT_TS}/summary/
+
+    - name: Generate index.html with Dropdowns
+      if: always()
+      run: |
+        INDEX_FILE=gh-pages/index.html
+        echo "<!DOCTYPE html>" > $INDEX_FILE
+        echo "<html lang='en'><head><meta charset='UTF-8'>" >> $INDEX_FILE
+        echo "<title>eCAL Test Reports</title>" >> $INDEX_FILE
+        echo "<style>" >> $INDEX_FILE
+        echo "body { font-family: Arial, sans-serif; padding: 2em; background: #f9f9f9; }" >> $INDEX_FILE
+        echo "h1 { color: #333; }" >> $INDEX_FILE
+        echo "details { background: #fff; border: 1px solid #ccc; margin-bottom: 10px; padding: 10px; border-radius: 4px; }" >> $INDEX_FILE
+        echo "summary { font-weight: bold; font-size: 1.1em; cursor: pointer; }" >> $INDEX_FILE
+        echo "ul { list-style-type: none; padding-left: 1em; }" >> $INDEX_FILE
+        echo "li { margin: 6px 0; }" >> $INDEX_FILE
+        echo "a { text-decoration: none; color: #0366d6; }" >> $INDEX_FILE
+        echo "a:hover { text-decoration: underline; }" >> $INDEX_FILE
+        echo "</style></head><body>" >> $INDEX_FILE
+        echo "<h1>eCAL Integration Test Reports</h1>" >> $INDEX_FILE
+
+        for folder in $(ls -1 gh-pages | grep -E '^[0-9]{4}-' | sort -r); do
+          COMMIT_FILE="gh-pages/$folder/.commit"
+          REPO_FILE="gh-pages/$folder/.repo"
+          COMMIT_HASH=""
+          REPO_URL=""
+          [[ -f "$COMMIT_FILE" ]] && COMMIT_HASH=$(cat "$COMMIT_FILE")
+          [[ -f "$REPO_FILE" ]] && REPO_URL=$(cat "$REPO_FILE")
+          echo "<details>" >> $INDEX_FILE
+          echo "<summary>Test Run: ${folder} (${COMMIT_HASH})</summary>" >> $INDEX_FILE
+          [[ -n "$REPO_URL" ]] && echo "<div style='margin-top: 6px; font-size: 0.9em;'>Source: <a href='$REPO_URL' target='_blank'>$REPO_URL</a></div>" >> $INDEX_FILE
+          echo "<ul>" >> $INDEX_FILE
+          if [[ -d gh-pages/$folder/summary ]]; then
+            echo "<li><b>Summary</b>: " >> $INDEX_FILE
+            [[ -f "gh-pages/$folder/summary/log.html" ]] && echo "<a href='${folder}/summary/log.html'>log</a> | " >> $INDEX_FILE
+            [[ -f "gh-pages/$folder/summary/report.html" ]] && echo "<a href='${folder}/summary/report.html'>report</a> | " >> $INDEX_FILE
+            [[ -f "gh-pages/$folder/summary/output.xml" ]] && echo "<a href='${folder}/summary/output.xml'>xml</a>" >> $INDEX_FILE
+            echo "</li>" >> $INDEX_FILE
+          fi
+          echo "</ul></details>" >> $INDEX_FILE
+        done
+
+        echo "</body></html>" >> $INDEX_FILE
+
+    - name: Deploy to GitHub Pages
+      if: always()
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./gh-pages
+        publish_branch: gh-pages
+        commit_message: "Deploy test report at ${{ env.REPORT_TS }}"
+        allow_empty_commit: true
+        keep_files: true
+
+    - name: Report status back to eCAL repo
+      if: always() && github.event_name == 'repository_dispatch'
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.COMMIT_STATUS_TOKEN }}
+        script: |
+          const { repo, sha } = context.payload.client_payload;
+          const [owner, name] = repo.split("/");
+
+          const state = '${{ job.status }}' === 'success' ? 'success' : 'failure';
+
+          await github.rest.repos.createCommitStatus({
+            owner,
+            repo: name,
+            sha,
+            state,
+            context: 'ECAL Integration Tests',
+            description: state === 'success' ? 'Tests passed' : 'Tests failed',
+            target_url: 'https://eclipse-ecal.github.io/ecal-test-suite/'
+          });

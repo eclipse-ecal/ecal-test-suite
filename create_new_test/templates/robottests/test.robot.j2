@@ -1,0 +1,49 @@
+*** Comments ***
+Test Objective:
+    Describe the purpose of the test case for {{ test_name }}.
+
+Test Context:
+    Provide background info or reasoning for this test.
+
+Test Scenario:
+    - Describe the steps involved (e.g., who starts first, when to crash).
+    - Define message values or behaviors.
+
+Success Criteria:
+    - What must be received / checked / confirmed?
+
+*** Settings ***
+Library           OperatingSystem
+Library           Process
+Library           ${CURDIR}/../../lib/DockerLibrary.py
+Library           ${CURDIR}/../../lib/GlobalPathsLibrary.py
+Suite Setup       Init Test Context
+
+*** Variables ***
+${NETWORK}        ${EMPTY}
+${BUILD_SCRIPT}   ${EMPTY}
+${BASE_IMAGE}     {{ test_name }}
+
+*** Test Cases ***
+{{ test_name | replace("_", " ") | title }}
+    [Tags]    {{ test_name }}
+    Run {{ test_name | replace("_", " ") | title }} Test
+
+*** Keywords ***
+Init Test Context
+    Set Test Context    {{ test_name }}    {{ test_name }}
+    ${build}=    Get Build Script Path
+    ${net}=      Get Network Name
+    ${args}=     Get Build Script Args
+    Set Suite Variable    ${BUILD_SCRIPT}    ${build}
+    Set Suite Variable    ${NETWORK}         ${net}
+
+    Log To Console    \n[SETUP] Building Docker image for {{ test_name }}...
+    ${result}=    Run Process    ${BUILD_SCRIPT}    @{args}
+    Should Be Equal As Integers    ${result.rc}    0    Docker image build failed!
+    Create Docker Network    ${NETWORK}
+    Sleep    2s
+
+Run {{ test_name | replace("_", " ") | title }} Test
+    # Add your test execution flow here
+    Log To Console    [INFO] Test not implemented yet for {{ test_name }}

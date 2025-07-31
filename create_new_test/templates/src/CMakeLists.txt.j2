@@ -1,0 +1,22 @@
+cmake_minimum_required(VERSION 3.10)
+project({{ test_name }})
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+find_package(eCAL REQUIRED)
+
+if(NOT DEFINED ECALCONFIGHELPER_PATH)
+  set(ECALCONFIGHELPER_PATH ${CMAKE_CURRENT_LIST_DIR}/../../lib/EcalConfigHelper)
+else()
+  add_subdirectory(${ECALCONFIGHELPER_PATH} ${CMAKE_BINARY_DIR}/EcalConfigHelper)
+endif()
+
+add_executable({{ test_name }}_pub {{ test_name }}_pub.cpp)
+add_executable({{ test_name }}_sub {{ test_name }}_sub.cpp)
+
+target_include_directories({{ test_name }}_pub PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories({{ test_name }}_sub PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+
+target_link_libraries({{ test_name }}_pub PRIVATE EcalConfigHelper eCAL::core)
+target_link_libraries({{ test_name }}_sub PRIVATE EcalConfigHelper eCAL::core)

@@ -1,0 +1,26 @@
+# Dockerfile for {{ test_name }}
+FROM ecal_base
+
+WORKDIR /app
+
+# Dependencies
+# Optional: install additional packages
+# RUN apt-get update && apt-get install -y <package>
+
+RUN apt-get update && apt-get install -y libtclap-dev
+
+# Copy helper libs and sources
+COPY lib/EcalConfigHelper /app/lib/EcalConfigHelper
+COPY {{ test_name }}/src/ /app/src/
+COPY {{ test_name }}/scripts/entrypoint.sh /app/entrypoint.sh
+
+# Build C++ test nodes
+WORKDIR /app/src
+RUN mkdir build && cd build && \
+    cmake -DECALCONFIGHELPER_PATH=/app/lib/EcalConfigHelper .. && \
+    make -j$(nproc)
+
+# Setup entrypoint
+WORKDIR /app
+RUN chmod +x ./entrypoint.sh
+ENTRYPOINT ["./entrypoint.sh"]
