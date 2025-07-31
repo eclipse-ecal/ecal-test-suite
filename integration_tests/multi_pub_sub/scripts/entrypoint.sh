@@ -56,8 +56,20 @@ elif [ "$ROLE" = "local_multi" ]; then
 
   wait $PUB1_PID
   wait $PUB2_PID
+  
   wait $SUB1_PID
+  SUB1_CODE=$?
+
   wait $SUB2_PID
+  SUB2_CODE=$?
+
+  if [[ $SUB1_CODE -ne 0 || $SUB2_CODE -ne 0 ]]; then
+    echo "[Entrypoint] One or more subscribers failed!"
+    exit 1
+  fi
+
+  echo "[Entrypoint] All subscribers received messages from both publishers."
+  exit 0
 
 else
   echo "[Entrypoint] Unknown role: $ROLE"

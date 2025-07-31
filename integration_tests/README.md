@@ -122,8 +122,3 @@ Artifacts:
 * `output.xml`: Test results
 * `log.html`, `report.html`: Detailed reports
 
----
-
-## Author
-
-**Emircan Tutar**

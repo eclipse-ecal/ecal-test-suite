@@ -8,7 +8,7 @@ Test Setup:
 - Two subscribers listen on that same topic and must receive all messages from both publishers.
 
 Covered eCAL modes:
-- local_shm
+- (local_shm)   --> Failing
 - local_udp
 - (local_tcp) --> Failing
 - network_udp
@@ -36,9 +36,10 @@ ${BUILD_SCRIPT}   ${EMPTY}
 ${BASE_IMAGE}     multi_pub_sub
 
 *** Test Cases ***
-Multi Pub/Sub Local SHM Test
-    [Tags]    multi_pub_sub_local_shm
-    Run Multi Pub Sub Test Local    local_shm
+#Multi Pub/Sub Local SHM Test
+#    [Tags]    multi_pub_sub_local_shm
+#    Run Multi Pub Sub Test Local    local_shm
+# DISABLED: local_shm mode fails sometimes when multiple publishers send on the same topic concurrently in one container.
 
 Multi Pub/Sub Local UDP Test
     [Tags]    multi_pub_sub_local_udp

@@ -177,5 +177,5 @@ jobs:
             state,
             context: 'ECAL Integration Tests',
             description: state === 'success' ? 'Tests passed' : 'Tests failed',
-            target_url: 'https://emirtutar.github.io/ecal-test-suite/'
+            target_url: 'https://eclipse-ecal.github.io/ecal-test-suite/'
           });
