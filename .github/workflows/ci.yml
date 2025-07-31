@@ -77,6 +77,12 @@ jobs:
     - name: Set PYTHONPATH
       run: echo "PYTHONPATH=$PWD/integration_tests/lib" >> $GITHUB_ENV
 
+    - name: Make all build_images.sh scripts executable
+      run: find integration_tests/ -type f -name "build_images.sh" -exec chmod +x {} \;
+
+    - name: Make all entrypoint.sh scripts executable
+      run: find integration_tests/ -type f -name "entrypoint.sh" -exec chmod +x {} \;
+
     - name: Run All Robot Tests Together
       run: |
         set -e
