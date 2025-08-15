@@ -163,7 +163,7 @@ jobs:
       if: always() && github.event_name == 'repository_dispatch'
       uses: actions/github-script@v6
       with:
-        github-token: ${{ secrets.COMMIT_STATUS_TOKEN }}
+        github-token: ${{ secrets.ECAL_TEST_SUITE_COMMIT_STATUS_GITHUB_TOKEN }}
         script: |
           const { repo, sha } = context.payload.client_payload;
           const [owner, name] = repo.split("/");
