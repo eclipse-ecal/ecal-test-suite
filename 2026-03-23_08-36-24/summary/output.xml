@@ -1,0 +1,1161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.4.2 (Python 3.12.3 on linux)" generated="2026-03-23T08:47:47.997146" rpa="false" schemaversion="5">
+<suite id="s1" name="Basic Pub Sub &amp; Multi Pub Sub &amp; Network Crash &amp; Pub Crash &amp; Rpc N To N Test &amp; Rpc Ping Test &amp; Rpc Reconnect Test &amp; Sub Crash &amp; Sub Send Crash">
+<suite id="s1-s1" name="Basic Pub Sub" source="/home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/basic_pub_sub/robottests/basic_pub_sub.robot">
+<kw name="Init Test Context" type="SETUP">
+<kw name="Set Test Context" owner="GlobalPathsLibrary">
+<arg>basic_pub_sub</arg>
+<arg>basic_pub_sub</arg>
+<doc>Sets the test folder and tag prefix if it's a valid test case.
+The folder must exist under integration_tests/ and contain typical test structure.</doc>
+<status status="PASS" start="2026-03-23T08:47:48.132391" elapsed="0.000190"/>
+</kw>
+<kw name="Get Build Script Path" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:48.132808" level="INFO">${build} = /home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/basic_pub_sub/scripts/build_images.sh</msg>
+<var>${build}</var>
+<status status="PASS" start="2026-03-23T08:47:48.132693" elapsed="0.000141"/>
+</kw>
+<kw name="Get Network Name" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:48.133073" level="INFO">${net} = ecal_test_net</msg>
+<var>${net}</var>
+<status status="PASS" start="2026-03-23T08:47:48.132907" elapsed="0.000209"/>
+</kw>
+<kw name="Get Build Script Args" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:48.133293" level="INFO">${args} = ['basic_pub_sub']</msg>
+<var>${args}</var>
+<status status="PASS" start="2026-03-23T08:47:48.133198" elapsed="0.000114"/>
+</kw>
+<kw name="Set Suite Variable" owner="BuiltIn">
+<msg time="2026-03-23T08:47:48.133702" level="INFO">${BUILD_SCRIPT} = /home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/basic_pub_sub/scripts/build_images.sh</msg>
+<arg>${BUILD_SCRIPT}</arg>
+<arg>${build}</arg>
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<status status="PASS" start="2026-03-23T08:47:48.133399" elapsed="0.000337"/>
+</kw>
+<kw name="Set Suite Variable" owner="BuiltIn">
+<msg time="2026-03-23T08:47:48.134056" level="INFO">${NETWORK} = ecal_test_net</msg>
+<arg>${NETWORK}</arg>
+<arg>${net}</arg>
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<status status="PASS" start="2026-03-23T08:47:48.133823" elapsed="0.000264"/>
+</kw>
+<kw name="Get Test Description" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:48.134358" level="INFO">${desc} = This test checks basic communication between a single publisher and a single subscriber.
+
+Test Setup:
+- The publisher sends 4 messages, each 0.2 MB in size, on a single topic.
+- The subscriber listens...</msg>
+<var>${desc}</var>
+<doc>Reads the *** Comments *** section from the .robot file and returns it as a string.</doc>
+<status status="PASS" start="2026-03-23T08:47:48.134200" elapsed="0.000178"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-03-23T08:47:48.134643" level="INFO">This test checks basic communication between a single publisher and a single subscriber.
+
+Test Setup:
+- The publisher sends 4 messages, each 0.2 MB in size, on a single topic.
+- The subscriber listens on that topic for 6 seconds and counts received messages.
+
+Covered eCAL modes:
+- local_shm
+- local_udp
+- local_tcp
+- network_udp
+- network_tcp
+
+Goals:
+- Ensure that basic 1:1 communication works reliably across all transport modes.
+- Validate correct transmission of payloads (200 KB).
+
+Success Criteria:
+- The subscriber receives exactly 4 messages.
+- If true, it exits with code 0.
+- Otherwise, it exits with code 1.</msg>
+<arg>${desc}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-03-23T08:47:48.134458" elapsed="0.000220"/>
+</kw>
+<kw name="Log To Console" owner="BuiltIn">
+<arg>[SETUP] Building Docker image...</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" start="2026-03-23T08:47:48.134749" elapsed="0.000174"/>
+</kw>
+<kw name="Run Process" owner="Process">
+<msg time="2026-03-23T08:47:48.135330" level="INFO">Starting process:
+/home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/basic_pub_sub/scripts/build_images.sh basic_pub_sub</msg>
+<msg time="2026-03-23T08:47:48.135757" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-03-23T08:47:51.971308" level="INFO">Process completed.</msg>
+<msg time="2026-03-23T08:47:51.971466" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<var>${result}</var>
+<arg>${BUILD_SCRIPT}</arg>
+<arg>@{args}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-03-23T08:47:48.135030" elapsed="3.836460"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-03-23T08:47:51.972296" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<msg time="2026-03-23T08:47:51.972420" level="FAIL">Failed to build Docker image!: 1 != 0</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>Failed to build Docker image!</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="FAIL" start="2026-03-23T08:47:51.971640" elapsed="0.000915">Failed to build Docker image!: 1 != 0</status>
+</kw>
+<kw name="Create Docker Network" owner="DockerLibrary">
+<arg>${NETWORK}</arg>
+<status status="NOT RUN" start="2026-03-23T08:47:51.972658" elapsed="0.000017"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<arg>3s</arg>
+<doc>Pauses the test executed for the given time.</doc>
+<status status="NOT RUN" start="2026-03-23T08:47:51.972743" elapsed="0.000015"/>
+</kw>
+<status status="FAIL" start="2026-03-23T08:47:48.131900" elapsed="3.840953">Failed to build Docker image!: 1 != 0</status>
+</kw>
+<test id="s1-s1-t1" name="Basic Pub/Sub Local SHM" line="38">
+<tag>basic_pub_sub_local_shm</tag>
+<status status="FAIL" start="2026-03-23T08:47:51.972925" elapsed="0.000378">Parent suite setup failed:
+Failed to build Docker image!: 1 != 0</status>
+</test>
+<test id="s1-s1-t2" name="Basic Pub/Sub Local UDP" line="42">
+<tag>basic_pub_sub_local_udp</tag>
+<status status="FAIL" start="2026-03-23T08:47:51.973502" elapsed="0.000309">Parent suite setup failed:
+Failed to build Docker image!: 1 != 0</status>
+</test>
+<test id="s1-s1-t3" name="Basic Pub/Sub Local TCP" line="46">
+<tag>basic_pub_sub_local_tcp</tag>
+<status status="FAIL" start="2026-03-23T08:47:51.974047" elapsed="0.000302">Parent suite setup failed:
+Failed to build Docker image!: 1 != 0</status>
+</test>
+<test id="s1-s1-t4" name="Basic Pub/Sub Network UDP" line="50">
+<tag>basic_pub_sub_network_udp</tag>
+<status status="FAIL" start="2026-03-23T08:47:51.974527" elapsed="0.000293">Parent suite setup failed:
+Failed to build Docker image!: 1 != 0</status>
+</test>
+<test id="s1-s1-t5" name="Basic Pub/Sub Network TCP" line="54">
+<tag>basic_pub_sub_network_tcp</tag>
+<status status="FAIL" start="2026-03-23T08:47:51.974985" elapsed="0.000315">Parent suite setup failed:
+Failed to build Docker image!: 1 != 0</status>
+</test>
+<status status="FAIL" start="2026-03-23T08:47:48.023940" elapsed="3.951741">Suite setup failed:
+Failed to build Docker image!: 1 != 0</status>
+</suite>
+<suite id="s1-s2" name="Multi Pub Sub" source="/home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/multi_pub_sub/robottests/multi_pub_sub.robot">
+<kw name="Init Test Context" type="SETUP">
+<kw name="Set Test Context" owner="GlobalPathsLibrary">
+<arg>multi_pub_sub</arg>
+<arg>multi_pub_sub</arg>
+<doc>Sets the test folder and tag prefix if it's a valid test case.
+The folder must exist under integration_tests/ and contain typical test structure.</doc>
+<status status="PASS" start="2026-03-23T08:47:51.979074" elapsed="0.000162"/>
+</kw>
+<kw name="Get Build Script Path" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:51.979410" level="INFO">${build} = /home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/multi_pub_sub/scripts/build_images.sh</msg>
+<var>${build}</var>
+<status status="PASS" start="2026-03-23T08:47:51.979317" elapsed="0.000113"/>
+</kw>
+<kw name="Get Network Name" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:51.979632" level="INFO">${net} = ecal_test_net</msg>
+<var>${net}</var>
+<status status="PASS" start="2026-03-23T08:47:51.979546" elapsed="0.000105"/>
+</kw>
+<kw name="Get Build Script Args" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:51.979796" level="INFO">${args} = ['multi_pub_sub']</msg>
+<var>${args}</var>
+<status status="PASS" start="2026-03-23T08:47:51.979717" elapsed="0.000097"/>
+</kw>
+<kw name="Set Suite Variable" owner="BuiltIn">
+<msg time="2026-03-23T08:47:51.980156" level="INFO">${BUILD_SCRIPT} = /home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/multi_pub_sub/scripts/build_images.sh</msg>
+<arg>${BUILD_SCRIPT}</arg>
+<arg>${build}</arg>
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<status status="PASS" start="2026-03-23T08:47:51.979889" elapsed="0.000300"/>
+</kw>
+<kw name="Set Suite Variable" owner="BuiltIn">
+<msg time="2026-03-23T08:47:51.980485" level="INFO">${NETWORK} = ecal_test_net</msg>
+<arg>${NETWORK}</arg>
+<arg>${net}</arg>
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<status status="PASS" start="2026-03-23T08:47:51.980271" elapsed="0.000243"/>
+</kw>
+<kw name="Get Test Description" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:51.981144" level="INFO">${desc} = This test validates eCAL communication in a scenario involving multiple publishers and subscribers.
+
+Test Setup:
+- Two publishers run in parallel and publish messages on the **same topic**.
+• Publishe...</msg>
+<var>${desc}</var>
+<doc>Reads the *** Comments *** section from the .robot file and returns it as a string.</doc>
+<status status="PASS" start="2026-03-23T08:47:51.980585" elapsed="0.000590"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-03-23T08:47:51.981446" level="INFO">This test validates eCAL communication in a scenario involving multiple publishers and subscribers.
+
+Test Setup:
+- Two publishers run in parallel and publish messages on the **same topic**.
+• Publisher 1 sends messages containing the byte value **42**.
+• Publisher 2 sends messages containing the byte value **43**.
+- Two subscribers listen on that same topic and must receive all messages from both publishers.
+
+Covered eCAL modes:
+- (local_shm)   --&gt; Failing
+- local_udp
+- (local_tcp) --&gt; Failing
+- network_udp
+- network_tcp
+
+Goals:
+- Ensure that eCAL correctly distributes messages from **multiple sources** to **multiple receivers**.
+- Verify that **topic routing, message integrity, and delivery** work consistently across different transport modes.
+
+Success Criteria:
+- Each subscriber must receive **10 messages with value 42** and **10 with value 43**.
+- If this condition is met, the subscriber exits with code **0**.
+- If any expected messages are missing, the subscriber exits with code **1**.</msg>
+<arg>${desc}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-03-23T08:47:51.981257" elapsed="0.000230"/>
+</kw>
+<kw name="Log To Console" owner="BuiltIn">
+<arg>[SETUP] Building Docker image...</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" start="2026-03-23T08:47:51.981560" elapsed="0.000186"/>
+</kw>
+<kw name="Run Process" owner="Process">
+<msg time="2026-03-23T08:47:51.982112" level="INFO">Starting process:
+/home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/multi_pub_sub/scripts/build_images.sh multi_pub_sub</msg>
+<msg time="2026-03-23T08:47:51.982528" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-03-23T08:47:52.839062" level="INFO">Process completed.</msg>
+<msg time="2026-03-23T08:47:52.839252" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<var>${result}</var>
+<arg>${BUILD_SCRIPT}</arg>
+<arg>@{args}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-03-23T08:47:51.981851" elapsed="0.857424"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-03-23T08:47:52.840044" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<msg time="2026-03-23T08:47:52.840183" level="FAIL">Failed to build Docker image!: 1 != 0</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>Failed to build Docker image!</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="FAIL" start="2026-03-23T08:47:52.839439" elapsed="0.000822">Failed to build Docker image!: 1 != 0</status>
+</kw>
+<kw name="Create Docker Network" owner="DockerLibrary">
+<arg>${NETWORK}</arg>
+<status status="NOT RUN" start="2026-03-23T08:47:52.840367" elapsed="0.000017"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<arg>3s</arg>
+<doc>Pauses the test executed for the given time.</doc>
+<status status="NOT RUN" start="2026-03-23T08:47:52.840459" elapsed="0.000026"/>
+</kw>
+<status status="FAIL" start="2026-03-23T08:47:51.978808" elapsed="0.861775">Failed to build Docker image!: 1 != 0</status>
+</kw>
+<test id="s1-s2-t1" name="Multi Pub/Sub Local UDP Test" line="44">
+<tag>multi_pub_sub_local_udp</tag>
+<status status="FAIL" start="2026-03-23T08:47:52.840652" elapsed="0.000290">Parent suite setup failed:
+Failed to build Docker image!: 1 != 0</status>
+</test>
+<test id="s1-s2-t2" name="Multi Pub/Sub Network UDP Test" line="48">
+<tag>multi_pub_sub_network_udp</tag>
+<status status="FAIL" start="2026-03-23T08:47:52.841161" elapsed="0.000255">Parent suite setup failed:
+Failed to build Docker image!: 1 != 0</status>
+</test>
+<test id="s1-s2-t3" name="Multi Pub/Sub Network TCP Test" line="52">
+<tag>multi_pub_sub_network_tcp</tag>
+<status status="FAIL" start="2026-03-23T08:47:52.841603" elapsed="0.000318">Parent suite setup failed:
+Failed to build Docker image!: 1 != 0</status>
+</test>
+<status status="FAIL" start="2026-03-23T08:47:51.976236" elapsed="0.866014">Suite setup failed:
+Failed to build Docker image!: 1 != 0</status>
+</suite>
+<suite id="s1-s3" name="Network Crash" source="/home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/network_crash/robottests/network_crash.robot">
+<kw name="Init Test Context" type="SETUP">
+<kw name="Set Test Context" owner="GlobalPathsLibrary">
+<arg>network_crash</arg>
+<arg>network_crash</arg>
+<doc>Sets the test folder and tag prefix if it's a valid test case.
+The folder must exist under integration_tests/ and contain typical test structure.</doc>
+<status status="PASS" start="2026-03-23T08:47:52.845696" elapsed="0.000132"/>
+</kw>
+<kw name="Get Build Script Path" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:52.845996" level="INFO">${build} = /home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/network_crash/scripts/build_images.sh</msg>
+<var>${build}</var>
+<status status="PASS" start="2026-03-23T08:47:52.845908" elapsed="0.000107"/>
+</kw>
+<kw name="Get Network Name" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:52.846380" level="INFO">${net} = ecal_test_net</msg>
+<var>${net}</var>
+<status status="PASS" start="2026-03-23T08:47:52.846079" elapsed="0.000322"/>
+</kw>
+<kw name="Get Build Script Args" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:52.846557" level="INFO">${args} = ['network_crash']</msg>
+<var>${args}</var>
+<status status="PASS" start="2026-03-23T08:47:52.846474" elapsed="0.000101"/>
+</kw>
+<kw name="Set Suite Variable" owner="BuiltIn">
+<msg time="2026-03-23T08:47:52.846896" level="INFO">${BUILD_SCRIPT} = /home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/network_crash/scripts/build_images.sh</msg>
+<arg>${BUILD_SCRIPT}</arg>
+<arg>${build}</arg>
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<status status="PASS" start="2026-03-23T08:47:52.846651" elapsed="0.000277"/>
+</kw>
+<kw name="Set Suite Variable" owner="BuiltIn">
+<msg time="2026-03-23T08:47:52.847249" level="INFO">${NETWORK} = ecal_test_net</msg>
+<arg>${NETWORK}</arg>
+<arg>${net}</arg>
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<status status="PASS" start="2026-03-23T08:47:52.847005" elapsed="0.000275"/>
+</kw>
+<kw name="Get Test Description" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:52.847557" level="INFO">${desc} = Test Objective:
+Verify that local UDP-based communication remains functional even if a separate network UDP publisher is disconnected —
+simulating a network failure scenario such as a cable unplug.
+
+T...</msg>
+<var>${desc}</var>
+<doc>Reads the *** Comments *** section from the .robot file and returns it as a string.</doc>
+<status status="PASS" start="2026-03-23T08:47:52.847387" elapsed="0.000193"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-03-23T08:47:52.847832" level="INFO">Test Objective:
+Verify that local UDP-based communication remains functional even if a separate network UDP publisher is disconnected —
+simulating a network failure scenario such as a cable unplug.
+
+Test Context:
+This test validates the robustness of eCAL's UDP transport layer under fault conditions by ensuring that
+local communication is not affected by network-layer interruptions.
+
+Test Scenario:
+1. A local UDP subscriber and two local UDP publishers run in the **same container** using eCAL's local mode.
+- Publisher 1 sends payloads with value 42 from the beginning.
+- Publisher 2 sends value 44, but only **after the network publisher is disconnected** (simulated delay).
+
+2. A network UDP publisher runs in a **separate container**, using eCAL network mode and sends value 43.
+
+3. All publishers run in parallel for a defined period (publisher 2 starts delayed after ~7s).
+
+4. The test then **disconnects** the network UDP publisher from the Docker network.
+
+Success Criteria:
+- The subscriber receives:
+• Messages with value 42 throughout the test.
+• Messages with value 43 only **before** the disconnection.
+• Messages with value 44 after the network crash (i.e., from local UDP Publisher 2).
+- The subscriber container exits with code 0.
+- The log confirms all expected messages have been received.
+
+Note:
+This test ensures **fault isolation** between local and network layers in eCAL middleware.</msg>
+<arg>${desc}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-03-23T08:47:52.847654" elapsed="0.000219"/>
+</kw>
+<kw name="Log To Console" owner="BuiltIn">
+<arg>[SETUP] Building image...</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" start="2026-03-23T08:47:52.847942" elapsed="0.000202"/>
+</kw>
+<kw name="Run Process" owner="Process">
+<msg time="2026-03-23T08:47:52.848454" level="INFO">Starting process:
+/home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/network_crash/scripts/build_images.sh network_crash</msg>
+<msg time="2026-03-23T08:47:52.848829" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-03-23T08:47:53.644660" level="INFO">Process completed.</msg>
+<msg time="2026-03-23T08:47:53.644872" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<var>${result}</var>
+<arg>${BUILD_SCRIPT}</arg>
+<arg>@{args}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-03-23T08:47:52.848233" elapsed="0.796684"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-03-23T08:47:53.645828" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<msg time="2026-03-23T08:47:53.645926" level="FAIL">Docker image build failed!: 1 != 0</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>Docker image build failed!</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="FAIL" start="2026-03-23T08:47:53.645112" elapsed="0.000875">Docker image build failed!: 1 != 0</status>
+</kw>
+<kw name="Create Docker Network" owner="DockerLibrary">
+<arg>${NETWORK}</arg>
+<status status="NOT RUN" start="2026-03-23T08:47:53.646202" elapsed="0.000040"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<arg>2s</arg>
+<doc>Pauses the test executed for the given time.</doc>
+<status status="NOT RUN" start="2026-03-23T08:47:53.646342" elapsed="0.000018"/>
+</kw>
+<status status="FAIL" start="2026-03-23T08:47:52.845560" elapsed="0.800888">Docker image build failed!: 1 != 0</status>
+</kw>
+<test id="s1-s3-t1" name="Local communication survives Network crash" line="45">
+<tag>network_crash_test</tag>
+<status status="FAIL" start="2026-03-23T08:47:53.646511" elapsed="0.000316">Parent suite setup failed:
+Docker image build failed!: 1 != 0</status>
+</test>
+<status status="FAIL" start="2026-03-23T08:47:52.842927" elapsed="0.804166">Suite setup failed:
+Docker image build failed!: 1 != 0</status>
+</suite>
+<suite id="s1-s4" name="Pub Crash" source="/home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/pub_crash/robottests/pub_crash.robot">
+<kw name="Init Test Context" type="SETUP">
+<kw name="Set Test Context" owner="GlobalPathsLibrary">
+<arg>pub_crash</arg>
+<arg>pub_crash</arg>
+<doc>Sets the test folder and tag prefix if it's a valid test case.
+The folder must exist under integration_tests/ and contain typical test structure.</doc>
+<status status="PASS" start="2026-03-23T08:47:53.650855" elapsed="0.000145"/>
+</kw>
+<kw name="Get Build Script Path" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:53.651221" level="INFO">${build} = /home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/pub_crash/scripts/build_images.sh</msg>
+<var>${build}</var>
+<status status="PASS" start="2026-03-23T08:47:53.651083" elapsed="0.000159"/>
+</kw>
+<kw name="Get Network Name" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:53.651396" level="INFO">${net} = ecal_test_net</msg>
+<var>${net}</var>
+<status status="PASS" start="2026-03-23T08:47:53.651314" elapsed="0.000100"/>
+</kw>
+<kw name="Get Build Script Args" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:53.651574" level="INFO">${args} = ['pub_crash']</msg>
+<var>${args}</var>
+<status status="PASS" start="2026-03-23T08:47:53.651493" elapsed="0.000099"/>
+</kw>
+<kw name="Set Suite Variable" owner="BuiltIn">
+<msg time="2026-03-23T08:47:53.651927" level="INFO">${BUILD_SCRIPT} = /home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/pub_crash/scripts/build_images.sh</msg>
+<arg>${BUILD_SCRIPT}</arg>
+<arg>${build}</arg>
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<status status="PASS" start="2026-03-23T08:47:53.651668" elapsed="0.000290"/>
+</kw>
+<kw name="Set Suite Variable" owner="BuiltIn">
+<msg time="2026-03-23T08:47:53.652294" level="INFO">${NETWORK} = ecal_test_net</msg>
+<arg>${NETWORK}</arg>
+<arg>${net}</arg>
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<status status="PASS" start="2026-03-23T08:47:53.652035" elapsed="0.000289"/>
+</kw>
+<kw name="Get Test Description" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:53.652553" level="INFO">${desc} = Test Objective:
+Ensure that communication to the subscriber continues even if one publisher crashes.
+
+Test Scenario:
+- Two publishers are started:
+1. crash_publisher: sends a few messages (value 42) a...</msg>
+<var>${desc}</var>
+<doc>Reads the *** Comments *** section from the .robot file and returns it as a string.</doc>
+<status status="PASS" start="2026-03-23T08:47:53.652395" elapsed="0.000178"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-03-23T08:47:53.652828" level="INFO">Test Objective:
+Ensure that communication to the subscriber continues even if one publisher crashes.
+
+Test Scenario:
+- Two publishers are started:
+1. crash_publisher: sends a few messages (value 42) and then crashes.
+2. test_publisher: continuously sends messages (value 43).
+- One subscriber receives data from both publishers.
+- A monitoring process tracks process appearance.
+
+Success Criteria:
+- Subscriber receives enough messages with value 43 after crash_publisher crashes.
+- Subscriber exits with code 0, indicating continued communication.
+- All containers terminate cleanly.</msg>
+<arg>${desc}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-03-23T08:47:53.652650" elapsed="0.000211"/>
+</kw>
+<kw name="Log To Console" owner="BuiltIn">
+<arg>[SETUP] Building Docker image...</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" start="2026-03-23T08:47:53.652932" elapsed="0.000246"/>
+</kw>
+<kw name="Run Process" owner="Process">
+<msg time="2026-03-23T08:47:53.653594" level="INFO">Starting process:
+/home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/pub_crash/scripts/build_images.sh pub_crash</msg>
+<msg time="2026-03-23T08:47:53.654186" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-03-23T08:47:54.443832" level="INFO">Process completed.</msg>
+<msg time="2026-03-23T08:47:54.444023" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<var>${result}</var>
+<arg>${BUILD_SCRIPT}</arg>
+<arg>@{args}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-03-23T08:47:53.653294" elapsed="0.790764"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-03-23T08:47:54.444913" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<msg time="2026-03-23T08:47:54.445012" level="FAIL">Docker build failed!: 1 != 0</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>Docker build failed!</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="FAIL" start="2026-03-23T08:47:54.444245" elapsed="0.000828">Docker build failed!: 1 != 0</status>
+</kw>
+<kw name="Create Docker Network" owner="DockerLibrary">
+<arg>${NETWORK}</arg>
+<status status="NOT RUN" start="2026-03-23T08:47:54.445291" elapsed="0.000020"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<arg>3s</arg>
+<doc>Pauses the test executed for the given time.</doc>
+<status status="NOT RUN" start="2026-03-23T08:47:54.445382" elapsed="0.000015"/>
+</kw>
+<status status="FAIL" start="2026-03-23T08:47:53.650684" elapsed="0.794797">Docker build failed!: 1 != 0</status>
+</kw>
+<test id="s1-s4-t1" name="Communication Continues After Publisher Crash (UDP)" line="30">
+<tag>pub_crash_network_udp</tag>
+<status status="FAIL" start="2026-03-23T08:47:54.445541" elapsed="0.000300">Parent suite setup failed:
+Docker build failed!: 1 != 0</status>
+</test>
+<test id="s1-s4-t2" name="Communication Continues After Publisher Crash (TCP)" line="34">
+<tag>pub_crash_network_tcp</tag>
+<status status="FAIL" start="2026-03-23T08:47:54.446020" elapsed="0.000351">Parent suite setup failed:
+Docker build failed!: 1 != 0</status>
+</test>
+<test id="s1-s4-t3" name="Communication Continues After Publisher Crash (SHM)" line="38">
+<tag>pub_crash_local_shm</tag>
+<status status="FAIL" start="2026-03-23T08:47:54.446555" elapsed="0.000309">Parent suite setup failed:
+Docker build failed!: 1 != 0</status>
+</test>
+<status status="FAIL" start="2026-03-23T08:47:53.647774" elapsed="0.799363">Suite setup failed:
+Docker build failed!: 1 != 0</status>
+</suite>
+<suite id="s1-s5" name="Rpc N To N Test" source="/home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/rpc_n_to_n_test/robottests/rpc_n_to_n_test.robot">
+<kw name="Init Test Context" type="SETUP">
+<kw name="Set Test Context" owner="GlobalPathsLibrary">
+<arg>rpc_n_to_n_test</arg>
+<arg>rpc_n_to_n_test</arg>
+<doc>Sets the test folder and tag prefix if it's a valid test case.
+The folder must exist under integration_tests/ and contain typical test structure.</doc>
+<status status="PASS" start="2026-03-23T08:47:54.451342" elapsed="0.000130"/>
+</kw>
+<kw name="Get Build Script Path" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:54.451642" level="INFO">${build} = /home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/rpc_n_to_n_test/scripts/build_images.sh</msg>
+<var>${build}</var>
+<status status="PASS" start="2026-03-23T08:47:54.451551" elapsed="0.000116"/>
+</kw>
+<kw name="Get Network Name" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:54.451813" level="INFO">${net} = ecal_test_net</msg>
+<var>${net}</var>
+<status status="PASS" start="2026-03-23T08:47:54.451733" elapsed="0.000097"/>
+</kw>
+<kw name="Get Build Script Args" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:54.451972" level="INFO">${args} = ['rpc_n_to_n_test']</msg>
+<var>${args}</var>
+<status status="PASS" start="2026-03-23T08:47:54.451891" elapsed="0.000098"/>
+</kw>
+<kw name="Set Suite Variable" owner="BuiltIn">
+<msg time="2026-03-23T08:47:54.452348" level="INFO">${BUILD_SCRIPT} = /home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/rpc_n_to_n_test/scripts/build_images.sh</msg>
+<arg>${BUILD_SCRIPT}</arg>
+<arg>${build}</arg>
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<status status="PASS" start="2026-03-23T08:47:54.452063" elapsed="0.000317"/>
+</kw>
+<kw name="Set Suite Variable" owner="BuiltIn">
+<msg time="2026-03-23T08:47:54.452673" level="INFO">${NETWORK} = ecal_test_net</msg>
+<arg>${NETWORK}</arg>
+<arg>${net}</arg>
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<status status="PASS" start="2026-03-23T08:47:54.452461" elapsed="0.000241"/>
+</kw>
+<kw name="Get Test Description" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:54.452923" level="INFO">${desc} = This test validates N-to-N RPC communication using eCAL, where multiple clients
+send concurrent Ping requests to multiple servers.
+
+Test Setup:
+- 2 RPC servers provide a method called "Ping".
+- 2 RPC ...</msg>
+<var>${desc}</var>
+<doc>Reads the *** Comments *** section from the .robot file and returns it as a string.</doc>
+<status status="PASS" start="2026-03-23T08:47:54.452771" elapsed="0.000173"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-03-23T08:47:54.453232" level="INFO">This test validates N-to-N RPC communication using eCAL, where multiple clients
+send concurrent Ping requests to multiple servers.
+
+Test Setup:
+- 2 RPC servers provide a method called "Ping".
+- 2 RPC clients call this method on all available servers.
+- Each client must receive a valid "PONG" response from all available servers.
+
+Goals:
+- Validate that RPC communication scales to N clients and N servers.
+- Ensure all clients connect and receive correct responses from all servers.
+
+Success Criteria:
+- Each client prints the correct number of "PONG" responses.
+- All clients exit with code 0.</msg>
+<arg>${desc}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-03-23T08:47:54.453017" elapsed="0.000249"/>
+</kw>
+<kw name="Log To Console" owner="BuiltIn">
+<arg>[SETUP] Building Docker image...</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" start="2026-03-23T08:47:54.453336" elapsed="0.000166"/>
+</kw>
+<kw name="Run Process" owner="Process">
+<msg time="2026-03-23T08:47:54.453841" level="INFO">Starting process:
+/home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/rpc_n_to_n_test/scripts/build_images.sh rpc_n_to_n_test</msg>
+<msg time="2026-03-23T08:47:54.454217" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-03-23T08:47:55.266453" level="INFO">Process completed.</msg>
+<msg time="2026-03-23T08:47:55.266603" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<var>${result}</var>
+<arg>${BUILD_SCRIPT}</arg>
+<arg>@{args}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-03-23T08:47:54.453601" elapsed="0.813028"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-03-23T08:47:55.267577" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<msg time="2026-03-23T08:47:55.267689" level="FAIL">Failed to build Docker image!: 1 != 0</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>Failed to build Docker image!</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="FAIL" start="2026-03-23T08:47:55.266775" elapsed="0.000994">Failed to build Docker image!: 1 != 0</status>
+</kw>
+<kw name="Create Docker Network" owner="DockerLibrary">
+<arg>${NETWORK}</arg>
+<status status="NOT RUN" start="2026-03-23T08:47:55.267870" elapsed="0.000018"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<arg>2s</arg>
+<doc>Pauses the test executed for the given time.</doc>
+<status status="NOT RUN" start="2026-03-23T08:47:55.267954" elapsed="0.000015"/>
+</kw>
+<status status="FAIL" start="2026-03-23T08:47:54.451204" elapsed="0.816914">Failed to build Docker image!: 1 != 0</status>
+</kw>
+<test id="s1-s5-t1" name="RPC N-to-N Test" line="33">
+<tag>rpc_n_to_n_test</tag>
+<status status="FAIL" start="2026-03-23T08:47:55.268180" elapsed="0.001458">Parent suite setup failed:
+Failed to build Docker image!: 1 != 0</status>
+</test>
+<status status="FAIL" start="2026-03-23T08:47:54.447773" elapsed="0.822122">Suite setup failed:
+Failed to build Docker image!: 1 != 0</status>
+</suite>
+<suite id="s1-s6" name="Rpc Ping Test" source="/home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/rpc_ping_test/robottests/rpc_ping_test.robot">
+<kw name="Init Test Context" type="SETUP">
+<kw name="Set Test Context" owner="GlobalPathsLibrary">
+<arg>rpc_ping_test</arg>
+<arg>rpc_ping_test</arg>
+<doc>Sets the test folder and tag prefix if it's a valid test case.
+The folder must exist under integration_tests/ and contain typical test structure.</doc>
+<status status="PASS" start="2026-03-23T08:47:55.273122" elapsed="0.000132"/>
+</kw>
+<kw name="Get Build Script Path" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:55.273422" level="INFO">${build} = /home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/rpc_ping_test/scripts/build_images.sh</msg>
+<var>${build}</var>
+<status status="PASS" start="2026-03-23T08:47:55.273333" elapsed="0.000108"/>
+</kw>
+<kw name="Get Network Name" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:55.273583" level="INFO">${net} = ecal_test_net</msg>
+<var>${net}</var>
+<status status="PASS" start="2026-03-23T08:47:55.273505" elapsed="0.000095"/>
+</kw>
+<kw name="Get Build Script Args" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:55.273740" level="INFO">${args} = ['rpc_ping_test']</msg>
+<var>${args}</var>
+<status status="PASS" start="2026-03-23T08:47:55.273662" elapsed="0.000095"/>
+</kw>
+<kw name="Set Suite Variable" owner="BuiltIn">
+<msg time="2026-03-23T08:47:55.274074" level="INFO">${BUILD_SCRIPT} = /home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/rpc_ping_test/scripts/build_images.sh</msg>
+<arg>${BUILD_SCRIPT}</arg>
+<arg>${build}</arg>
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<status status="PASS" start="2026-03-23T08:47:55.273830" elapsed="0.000338"/>
+</kw>
+<kw name="Set Suite Variable" owner="BuiltIn">
+<msg time="2026-03-23T08:47:55.274475" level="INFO">${NETWORK} = ecal_test_net</msg>
+<arg>${NETWORK}</arg>
+<arg>${net}</arg>
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<status status="PASS" start="2026-03-23T08:47:55.274253" elapsed="0.000252"/>
+</kw>
+<kw name="Get Test Description" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:55.274726" level="INFO">${desc} = This test checks a basic RPC communication between a client and a server.
+
+Test Setup:
+- The server provides a method called "Ping".
+- The client sends one "PING" request to this method.
+
+Goals:
+- Ens...</msg>
+<var>${desc}</var>
+<doc>Reads the *** Comments *** section from the .robot file and returns it as a string.</doc>
+<status status="PASS" start="2026-03-23T08:47:55.274577" elapsed="0.000169"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-03-23T08:47:55.274999" level="INFO">This test checks a basic RPC communication between a client and a server.
+
+Test Setup:
+- The server provides a method called "Ping".
+- The client sends one "PING" request to this method.
+
+Goals:
+- Ensure RPC client-server interaction works over network UDP.
+- Validate that the server responds with "PONG".
+- The client must connect, call the method, and receive a valid response.
+
+Success Criteria:
+- The server receives a call and returns a response.
+- The client prints the response and exits with code 0.</msg>
+<arg>${desc}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-03-23T08:47:55.274817" elapsed="0.000216"/>
+</kw>
+<kw name="Log To Console" owner="BuiltIn">
+<arg>[SETUP] Building Docker image...</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" start="2026-03-23T08:47:55.275128" elapsed="0.000176"/>
+</kw>
+<kw name="Run Process" owner="Process">
+<msg time="2026-03-23T08:47:55.275646" level="INFO">Starting process:
+/home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/rpc_ping_test/scripts/build_images.sh rpc_ping_test</msg>
+<msg time="2026-03-23T08:47:55.276017" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-03-23T08:47:56.050857" level="INFO">Process completed.</msg>
+<msg time="2026-03-23T08:47:56.051046" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<var>${result}</var>
+<arg>${BUILD_SCRIPT}</arg>
+<arg>@{args}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-03-23T08:47:55.275407" elapsed="0.775666"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-03-23T08:47:56.052135" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<msg time="2026-03-23T08:47:56.052254" level="FAIL">Failed to build Docker image!: 1 != 0</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>Failed to build Docker image!</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="FAIL" start="2026-03-23T08:47:56.051288" elapsed="0.001052">Failed to build Docker image!: 1 != 0</status>
+</kw>
+<kw name="Create Docker Network" owner="DockerLibrary">
+<arg>${NETWORK}</arg>
+<status status="NOT RUN" start="2026-03-23T08:47:56.052475" elapsed="0.000027"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<arg>2s</arg>
+<doc>Pauses the test executed for the given time.</doc>
+<status status="NOT RUN" start="2026-03-23T08:47:56.052602" elapsed="0.000022"/>
+</kw>
+<status status="FAIL" start="2026-03-23T08:47:55.272964" elapsed="0.779774">Failed to build Docker image!: 1 != 0</status>
+</kw>
+<test id="s1-s6-t1" name="RPC Ping Test" line="30">
+<tag>rpc_server_client_ping_test</tag>
+<status status="FAIL" start="2026-03-23T08:47:56.052826" elapsed="0.000399">Parent suite setup failed:
+Failed to build Docker image!: 1 != 0</status>
+</test>
+<status status="FAIL" start="2026-03-23T08:47:55.270472" elapsed="0.783076">Suite setup failed:
+Failed to build Docker image!: 1 != 0</status>
+</suite>
+<suite id="s1-s7" name="Rpc Reconnect Test" source="/home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/rpc_reconnect_test/robottests/rpc_reconnect_test.robot">
+<kw name="Init Test Context" type="SETUP">
+<kw name="Set Test Context" owner="GlobalPathsLibrary">
+<arg>rpc_reconnect_test</arg>
+<arg>rpc_reconnect_test</arg>
+<doc>Sets the test folder and tag prefix if it's a valid test case.
+The folder must exist under integration_tests/ and contain typical test structure.</doc>
+<status status="PASS" start="2026-03-23T08:47:56.057216" elapsed="0.000135"/>
+</kw>
+<kw name="Get Build Script Path" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:56.057520" level="INFO">${build} = /home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/rpc_reconnect_test/scripts/build_images.sh</msg>
+<var>${build}</var>
+<status status="PASS" start="2026-03-23T08:47:56.057430" elapsed="0.000109"/>
+</kw>
+<kw name="Get Build Script Args" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:56.057683" level="INFO">${args} = ['rpc_reconnect_test']</msg>
+<var>${args}</var>
+<status status="PASS" start="2026-03-23T08:47:56.057604" elapsed="0.000096"/>
+</kw>
+<kw name="Set Suite Variable" owner="BuiltIn">
+<msg time="2026-03-23T08:47:56.058022" level="INFO">${BUILD_SCRIPT} = /home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/rpc_reconnect_test/scripts/build_images.sh</msg>
+<arg>${BUILD_SCRIPT}</arg>
+<arg>${build}</arg>
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<status status="PASS" start="2026-03-23T08:47:56.057776" elapsed="0.000278"/>
+</kw>
+<kw name="Create Docker Network With Subnet" owner="DockerLibrary">
+<arg>${NETWORK}</arg>
+<arg>172.28.0.0/16</arg>
+<doc>Creates a Docker bridge network with a given subnet if it does not already exist.</doc>
+<status status="PASS" start="2026-03-23T08:47:56.058161" elapsed="0.067729"/>
+</kw>
+<kw name="Log To Console" owner="BuiltIn">
+<arg>[SETUP] Building Docker image...</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" start="2026-03-23T08:47:56.126134" elapsed="0.000340"/>
+</kw>
+<kw name="Run Process" owner="Process">
+<msg time="2026-03-23T08:47:56.126902" level="INFO">Starting process:
+/home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/rpc_reconnect_test/scripts/build_images.sh rpc_reconnect_test</msg>
+<msg time="2026-03-23T08:47:56.127289" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-03-23T08:47:56.891997" level="INFO">Process completed.</msg>
+<msg time="2026-03-23T08:47:56.892214" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<var>${result}</var>
+<arg>${BUILD_SCRIPT}</arg>
+<arg>@{args}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-03-23T08:47:56.126599" elapsed="0.765656"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-03-23T08:47:56.893299" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<msg time="2026-03-23T08:47:56.893431" level="FAIL">Failed to build Docker image!: 1 != 0</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>Failed to build Docker image!</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="FAIL" start="2026-03-23T08:47:56.892423" elapsed="0.001092">Failed to build Docker image!: 1 != 0</status>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<arg>3s</arg>
+<doc>Pauses the test executed for the given time.</doc>
+<status status="NOT RUN" start="2026-03-23T08:47:56.893614" elapsed="0.000024"/>
+</kw>
+<status status="FAIL" start="2026-03-23T08:47:56.057029" elapsed="0.836697">Failed to build Docker image!: 1 != 0</status>
+</kw>
+<test id="s1-s7-t1" name="RPC Reconnect Test" line="28">
+<tag>rpc_reconnect</tag>
+<status status="FAIL" start="2026-03-23T08:47:56.893792" elapsed="0.000288">Parent suite setup failed:
+Failed to build Docker image!: 1 != 0</status>
+</test>
+<test id="s1-s7-t2" name="RPC Reconnect Test2" line="32">
+<tag>rpc_reconnect</tag>
+<status status="FAIL" start="2026-03-23T08:47:56.894289" elapsed="0.000222">Parent suite setup failed:
+Failed to build Docker image!: 1 != 0</status>
+</test>
+<status status="FAIL" start="2026-03-23T08:47:56.054249" elapsed="0.840517">Suite setup failed:
+Failed to build Docker image!: 1 != 0</status>
+</suite>
+<suite id="s1-s8" name="Sub Crash" source="/home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/sub_crash/robottests/sub_crash.robot">
+<kw name="Init Test Context" type="SETUP">
+<kw name="Set Test Context" owner="GlobalPathsLibrary">
+<arg>sub_crash</arg>
+<arg>sub_crash</arg>
+<doc>Sets the test folder and tag prefix if it's a valid test case.
+The folder must exist under integration_tests/ and contain typical test structure.</doc>
+<status status="PASS" start="2026-03-23T08:47:56.898377" elapsed="0.000306"/>
+</kw>
+<kw name="Get Build Script Path" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:56.898860" level="INFO">${build} = /home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/sub_crash/scripts/build_images.sh</msg>
+<var>${build}</var>
+<status status="PASS" start="2026-03-23T08:47:56.898768" elapsed="0.000111"/>
+</kw>
+<kw name="Get Network Name" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:56.899023" level="INFO">${net} = ecal_test_net</msg>
+<var>${net}</var>
+<status status="PASS" start="2026-03-23T08:47:56.898945" elapsed="0.000095"/>
+</kw>
+<kw name="Get Build Script Args" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:56.899224" level="INFO">${args} = ['sub_crash']</msg>
+<var>${args}</var>
+<status status="PASS" start="2026-03-23T08:47:56.899139" elapsed="0.000104"/>
+</kw>
+<kw name="Set Suite Variable" owner="BuiltIn">
+<msg time="2026-03-23T08:47:56.899568" level="INFO">${BUILD_SCRIPT} = /home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/sub_crash/scripts/build_images.sh</msg>
+<arg>${BUILD_SCRIPT}</arg>
+<arg>${build}</arg>
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<status status="PASS" start="2026-03-23T08:47:56.899322" elapsed="0.000278"/>
+</kw>
+<kw name="Set Suite Variable" owner="BuiltIn">
+<msg time="2026-03-23T08:47:56.899901" level="INFO">${NETWORK} = ecal_test_net</msg>
+<arg>${NETWORK}</arg>
+<arg>${net}</arg>
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<status status="PASS" start="2026-03-23T08:47:56.899680" elapsed="0.000251"/>
+</kw>
+<kw name="Get Test Description" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:56.900199" level="INFO">${desc} = Test Objective:
+Ensure that a second subscriber continues to receive messages even if one subscriber crashes.
+
+Test Scenario:
+- One publisher (`test_publisher`) sends continuous messages (value 43).
+-...</msg>
+<var>${desc}</var>
+<doc>Reads the *** Comments *** section from the .robot file and returns it as a string.</doc>
+<status status="PASS" start="2026-03-23T08:47:56.900003" elapsed="0.000218"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-03-23T08:47:56.900485" level="INFO">Test Objective:
+Ensure that a second subscriber continues to receive messages even if one subscriber crashes.
+
+Test Scenario:
+- One publisher (`test_publisher`) sends continuous messages (value 43).
+- Two subscribers are started:
+1. `crash_subscriber`: receives a few messages and then crashes.
+2. `test_subscriber`: receives messages throughout the test duration.
+- A monitoring process tracks all components.
+
+Success Criteria:
+- `test_subscriber` must receive a number of messages.
+- `test_subscriber` must exit with code 0.
+- The crash of one subscriber does not affect the continued communication of the other.</msg>
+<arg>${desc}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-03-23T08:47:56.900301" elapsed="0.000218"/>
+</kw>
+<kw name="Log To Console" owner="BuiltIn">
+<arg>[SETUP] Building Docker image...</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" start="2026-03-23T08:47:56.900591" elapsed="0.000171"/>
+</kw>
+<kw name="Run Process" owner="Process">
+<msg time="2026-03-23T08:47:56.901173" level="INFO">Starting process:
+/home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/sub_crash/scripts/build_images.sh sub_crash</msg>
+<msg time="2026-03-23T08:47:56.901542" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-03-23T08:47:57.670563" level="INFO">Process completed.</msg>
+<msg time="2026-03-23T08:47:57.670757" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<var>${result}</var>
+<arg>${BUILD_SCRIPT}</arg>
+<arg>@{args}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-03-23T08:47:56.900874" elapsed="0.769922"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-03-23T08:47:57.672155" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<msg time="2026-03-23T08:47:57.672283" level="FAIL">Docker build failed!: 1 != 0</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<arg>Docker build failed!</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="FAIL" start="2026-03-23T08:47:57.670994" elapsed="0.001409">Docker build failed!: 1 != 0</status>
+</kw>
+<kw name="Create Docker Network" owner="DockerLibrary">
+<arg>${NETWORK}</arg>
+<status status="NOT RUN" start="2026-03-23T08:47:57.672550" elapsed="0.000025"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<arg>3s</arg>
+<doc>Pauses the test executed for the given time.</doc>
+<status status="NOT RUN" start="2026-03-23T08:47:57.672676" elapsed="0.000026"/>
+</kw>
+<status status="FAIL" start="2026-03-23T08:47:56.898224" elapsed="0.774593">Docker build failed!: 1 != 0</status>
+</kw>
+<test id="s1-s8-t1" name="Network Communication Continues After Subscriber Crash (UDP)" line="30">
+<tag>sub_crash_network_udp</tag>
+<status status="FAIL" start="2026-03-23T08:47:57.673232" elapsed="0.000477">Parent suite setup failed:
+Docker build failed!: 1 != 0</status>
+</test>
+<test id="s1-s8-t2" name="Network Communication Continues After Publisher Crash (TCP)" line="34">
+<tag>pub_crash_network_tcp</tag>
+<status status="FAIL" start="2026-03-23T08:47:57.673939" elapsed="0.000394">Parent suite setup failed:
+Docker build failed!: 1 != 0</status>
+</test>
+<test id="s1-s8-t3" name="Local Communication Continues After Subscriber Crash (SHM)" line="38">
+<tag>sub_crash_local_shm</tag>
+<status status="FAIL" start="2026-03-23T08:47:57.674521" elapsed="0.000240">Parent suite setup failed:
+Docker build failed!: 1 != 0</status>
+</test>
+<test id="s1-s8-t4" name="Local Communication Continues After Subscriber Crash (UDP)" line="42">
+<tag>sub_crash_local_udp</tag>
+<status status="FAIL" start="2026-03-23T08:47:57.674951" elapsed="0.000530">Parent suite setup failed:
+Docker build failed!: 1 != 0</status>
+</test>
+<test id="s1-s8-t5" name="Local Communication Continues After Subscriber Crash (TCP)" line="46">
+<tag>sub_crash_local_tcp</tag>
+<status status="FAIL" start="2026-03-23T08:47:57.675706" elapsed="0.000319">Parent suite setup failed:
+Docker build failed!: 1 != 0</status>
+</test>
+<status status="FAIL" start="2026-03-23T08:47:56.895554" elapsed="0.780856">Suite setup failed:
+Docker build failed!: 1 != 0</status>
+</suite>
+<suite id="s1-s9" name="Sub Send Crash" source="/home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/sub_send_crash/robottests/sub_send_crash.robot">
+<kw name="Init Test Context" type="SETUP">
+<kw name="Set Test Context" owner="GlobalPathsLibrary">
+<arg>sub_send_crash</arg>
+<arg>sub_send_crash</arg>
+<doc>Sets the test folder and tag prefix if it's a valid test case.
+The folder must exist under integration_tests/ and contain typical test structure.</doc>
+<status status="PASS" start="2026-03-23T08:47:57.680608" elapsed="0.000153"/>
+</kw>
+<kw name="Get Build Script Path" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:57.680955" level="INFO">${build} = /home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/sub_send_crash/scripts/build_images.sh</msg>
+<var>${build}</var>
+<status status="PASS" start="2026-03-23T08:47:57.680844" elapsed="0.000132"/>
+</kw>
+<kw name="Get Network Name" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:57.681157" level="INFO">${net} = ecal_test_net</msg>
+<var>${net}</var>
+<status status="PASS" start="2026-03-23T08:47:57.681044" elapsed="0.000134"/>
+</kw>
+<kw name="Get Build Script Args" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:57.681327" level="INFO">${args} = ['sub_send_crash']</msg>
+<var>${args}</var>
+<status status="PASS" start="2026-03-23T08:47:57.681246" elapsed="0.000243"/>
+</kw>
+<kw name="Set Suite Variable" owner="BuiltIn">
+<msg time="2026-03-23T08:47:57.681823" level="INFO">${BUILD_SCRIPT} = /home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/sub_send_crash/scripts/build_images.sh</msg>
+<arg>${BUILD_SCRIPT}</arg>
+<arg>${build}</arg>
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<status status="PASS" start="2026-03-23T08:47:57.681575" elapsed="0.000279"/>
+</kw>
+<kw name="Set Suite Variable" owner="BuiltIn">
+<msg time="2026-03-23T08:47:57.682174" level="INFO">${NETWORK} = ecal_test_net</msg>
+<arg>${NETWORK}</arg>
+<arg>${net}</arg>
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<status status="PASS" start="2026-03-23T08:47:57.681933" elapsed="0.000273"/>
+</kw>
+<kw name="Get Test Description" owner="GlobalPathsLibrary">
+<msg time="2026-03-23T08:47:57.682432" level="INFO">${desc} = Test Objective:
+This test verifies that if one subscriber crashes during the reception of a large message,
+other subscribers or the publisher remain unaffected and stable.
+
+Test Scenario:
+- A `large_p...</msg>
+<var>${desc}</var>
+<doc>Reads the *** Comments *** section from the .robot file and returns it as a string.</doc>
+<status status="PASS" start="2026-03-23T08:47:57.682279" elapsed="0.000173"/>
+</kw>
+<kw name="Log" owner="BuiltIn">
+<msg time="2026-03-23T08:47:57.682696" level="INFO">Test Objective:
+This test verifies that if one subscriber crashes during the reception of a large message,
+other subscribers or the publisher remain unaffected and stable.
+
+Test Scenario:
+- A `large_publisher` sends very large messages (~50MB+).
+- One `crash_subscriber` is designed to crash during message reception (e.g., via simulated failure during callback).
+- One `test_subscriber` continues running and must successfully receive all messages.
+- In an additional test case, a variant with `zero_copy_mode` enabled is used to evaluate the performance and fault tolerance in a high-throughput configuration.
+
+Success Criteria:
+- The `test_subscriber` must receive messages without crashing and exit with code 0.
+- The `crash_subscriber` should crash as intended.
+- The `large_publisher` must remain operational and not be blocked or destabilized.
+- In SHM mode with `zero_copy`, the system should handle the shared memory access without affecting other subscribers or the pubisher.
+
+Notes:
+- Zero-Copy mode is only applicable to Shared Memory (SHM) transport.
+- The Local UDP test is skipped for large messages because of message size limitations.
+- This test failes because of SHM with zero copy mode, which is a known issue in the current implementation.</msg>
+<arg>${desc}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="PASS" start="2026-03-23T08:47:57.682524" elapsed="0.000206"/>
+</kw>
+<kw name="Log To Console" owner="BuiltIn">
+<arg>[SETUP] Building image...</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" start="2026-03-23T08:47:57.682800" elapsed="0.000171"/>
+</kw>
+<kw name="Run Process" owner="Process">
+<msg time="2026-03-23T08:47:57.683358" level="INFO">Starting process:
+/home/runner/work/ecal-test-suite/ecal-test-suite/integration_tests/sub_send_crash/scripts/build_images.sh sub_send_crash</msg>
+<msg time="2026-03-23T08:47:57.683732" level="INFO">Waiting for process to complete.</msg>
+<msg time="2026-03-23T08:47:58.452086" level="INFO">Process completed.</msg>
+<msg time="2026-03-23T08:47:58.452419" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<var>${result}</var>
+<arg>${BUILD_SCRIPT}</arg>
+<arg>@{args}</arg>
+<doc>Runs a process and waits for it to complete.</doc>
+<status status="PASS" start="2026-03-23T08:47:57.683082" elapsed="0.769373"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-03-23T08:47:58.453419" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<msg time="2026-03-23T08:47:58.453551" level="FAIL">1 != 0</msg>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="FAIL" start="2026-03-23T08:47:58.452656" elapsed="0.000961">1 != 0</status>
+</kw>
+<kw name="Create Docker Network" owner="DockerLibrary">
+<arg>${NETWORK}</arg>
+<status status="NOT RUN" start="2026-03-23T08:47:58.453741" elapsed="0.000020"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<arg>3s</arg>
+<doc>Pauses the test executed for the given time.</doc>
+<status status="NOT RUN" start="2026-03-23T08:47:58.453832" elapsed="0.000022"/>
+</kw>
+<status status="FAIL" start="2026-03-23T08:47:57.680428" elapsed="0.773546">1 != 0</status>
+</kw>
+<test id="s1-s9-t1" name="Crash During Reception (SHM)" line="36">
+<tag>crash_receive_local_shm</tag>
+<status status="FAIL" start="2026-03-23T08:47:58.454040" elapsed="0.000447">Parent suite setup failed:
+1 != 0</status>
+</test>
+<test id="s1-s9-t2" name="Crash During Reception (TCP)" line="50">
+<tag>crash_receive_local_tcp</tag>
+<status status="FAIL" start="2026-03-23T08:47:58.454675" elapsed="0.000289">Parent suite setup failed:
+1 != 0</status>
+</test>
+<test id="s1-s9-t3" name="Crash During Reception (Network UDP)" line="54">
+<tag>crash_receive_network_udp</tag>
+<status status="FAIL" start="2026-03-23T08:47:58.455221" elapsed="0.000305">Parent suite setup failed:
+1 != 0</status>
+</test>
+<test id="s1-s9-t4" name="Crash During Reception (Network TCP)" line="58">
+<tag>crash_receive_network_tcp</tag>
+<status status="FAIL" start="2026-03-23T08:47:58.455730" elapsed="0.000318">Parent suite setup failed:
+1 != 0</status>
+</test>
+<status status="FAIL" start="2026-03-23T08:47:57.677066" elapsed="0.779342">Suite setup failed:
+1 != 0</status>
+</suite>
+<status status="FAIL" start="2026-03-23T08:47:47.997927" elapsed="10.459346"/>
+</suite>
+<statistics>
+<total>
+<stat pass="0" fail="25" skip="0">All Tests</stat>
+</total>
+<tag>
+<stat pass="0" fail="1" skip="0">basic_pub_sub_local_shm</stat>
+<stat pass="0" fail="1" skip="0">basic_pub_sub_local_tcp</stat>
+<stat pass="0" fail="1" skip="0">basic_pub_sub_local_udp</stat>
+<stat pass="0" fail="1" skip="0">basic_pub_sub_network_tcp</stat>
+<stat pass="0" fail="1" skip="0">basic_pub_sub_network_udp</stat>
+<stat pass="0" fail="1" skip="0">crash_receive_local_shm</stat>
+<stat pass="0" fail="1" skip="0">crash_receive_local_tcp</stat>
+<stat pass="0" fail="1" skip="0">crash_receive_network_tcp</stat>
+<stat pass="0" fail="1" skip="0">crash_receive_network_udp</stat>
+<stat pass="0" fail="1" skip="0">multi_pub_sub_local_udp</stat>
+<stat pass="0" fail="1" skip="0">multi_pub_sub_network_tcp</stat>
+<stat pass="0" fail="1" skip="0">multi_pub_sub_network_udp</stat>
+<stat pass="0" fail="1" skip="0">network_crash_test</stat>
+<stat pass="0" fail="1" skip="0">pub_crash_local_shm</stat>
+<stat pass="0" fail="2" skip="0">pub_crash_network_tcp</stat>
+<stat pass="0" fail="1" skip="0">pub_crash_network_udp</stat>
+<stat pass="0" fail="1" skip="0">rpc_n_to_n_test</stat>
+<stat pass="0" fail="2" skip="0">rpc_reconnect</stat>
+<stat pass="0" fail="1" skip="0">rpc_server_client_ping_test</stat>
+<stat pass="0" fail="1" skip="0">sub_crash_local_shm</stat>
+<stat pass="0" fail="1" skip="0">sub_crash_local_tcp</stat>
+<stat pass="0" fail="1" skip="0">sub_crash_local_udp</stat>
+<stat pass="0" fail="1" skip="0">sub_crash_network_udp</stat>
+</tag>
+<suite>
+<stat name="Basic Pub Sub &amp; Multi Pub Sub &amp; Network Crash &amp; Pub Crash &amp; Rpc N To N Test &amp; Rpc Ping Test &amp; Rpc Reconnect Test &amp; Sub Crash &amp; Sub Send Crash" id="s1" pass="0" fail="25" skip="0">Basic Pub Sub &amp; Multi Pub Sub &amp; Network Crash &amp; Pub Crash &amp; Rpc N To N Test &amp; Rpc Ping Test &amp; Rpc Reconnect Test &amp; Sub Crash &amp; Sub Send Crash</stat>
+<stat name="Basic Pub Sub" id="s1-s1" pass="0" fail="5" skip="0">Basic Pub Sub &amp; Multi Pub Sub &amp; Network Crash &amp; Pub Crash &amp; Rpc N To N Test &amp; Rpc Ping Test &amp; Rpc Reconnect Test &amp; Sub Crash &amp; Sub Send Crash.Basic Pub Sub</stat>
+<stat name="Multi Pub Sub" id="s1-s2" pass="0" fail="3" skip="0">Basic Pub Sub &amp; Multi Pub Sub &amp; Network Crash &amp; Pub Crash &amp; Rpc N To N Test &amp; Rpc Ping Test &amp; Rpc Reconnect Test &amp; Sub Crash &amp; Sub Send Crash.Multi Pub Sub</stat>
+<stat name="Network Crash" id="s1-s3" pass="0" fail="1" skip="0">Basic Pub Sub &amp; Multi Pub Sub &amp; Network Crash &amp; Pub Crash &amp; Rpc N To N Test &amp; Rpc Ping Test &amp; Rpc Reconnect Test &amp; Sub Crash &amp; Sub Send Crash.Network Crash</stat>
+<stat name="Pub Crash" id="s1-s4" pass="0" fail="3" skip="0">Basic Pub Sub &amp; Multi Pub Sub &amp; Network Crash &amp; Pub Crash &amp; Rpc N To N Test &amp; Rpc Ping Test &amp; Rpc Reconnect Test &amp; Sub Crash &amp; Sub Send Crash.Pub Crash</stat>
+<stat name="Rpc N To N Test" id="s1-s5" pass="0" fail="1" skip="0">Basic Pub Sub &amp; Multi Pub Sub &amp; Network Crash &amp; Pub Crash &amp; Rpc N To N Test &amp; Rpc Ping Test &amp; Rpc Reconnect Test &amp; Sub Crash &amp; Sub Send Crash.Rpc N To N Test</stat>
+<stat name="Rpc Ping Test" id="s1-s6" pass="0" fail="1" skip="0">Basic Pub Sub &amp; Multi Pub Sub &amp; Network Crash &amp; Pub Crash &amp; Rpc N To N Test &amp; Rpc Ping Test &amp; Rpc Reconnect Test &amp; Sub Crash &amp; Sub Send Crash.Rpc Ping Test</stat>
+<stat name="Rpc Reconnect Test" id="s1-s7" pass="0" fail="2" skip="0">Basic Pub Sub &amp; Multi Pub Sub &amp; Network Crash &amp; Pub Crash &amp; Rpc N To N Test &amp; Rpc Ping Test &amp; Rpc Reconnect Test &amp; Sub Crash &amp; Sub Send Crash.Rpc Reconnect Test</stat>
+<stat name="Sub Crash" id="s1-s8" pass="0" fail="5" skip="0">Basic Pub Sub &amp; Multi Pub Sub &amp; Network Crash &amp; Pub Crash &amp; Rpc N To N Test &amp; Rpc Ping Test &amp; Rpc Reconnect Test &amp; Sub Crash &amp; Sub Send Crash.Sub Crash</stat>
+<stat name="Sub Send Crash" id="s1-s9" pass="0" fail="4" skip="0">Basic Pub Sub &amp; Multi Pub Sub &amp; Network Crash &amp; Pub Crash &amp; Rpc N To N Test &amp; Rpc Ping Test &amp; Rpc Reconnect Test &amp; Sub Crash &amp; Sub Send Crash.Sub Send Crash</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
